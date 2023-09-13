@@ -8,9 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		810AD1802A9805EA00F94F43 /* SessionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 810AD17F2A9805EA00F94F43 /* SessionViewController.swift */; };
-		810AD1902A9F200F00F94F43 /* CptShare.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 810AD18F2A9F200F00F94F43 /* CptShare.xcframework */; };
-		810AD1912A9F200F00F94F43 /* CptShare.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 810AD18F2A9F200F00F94F43 /* CptShare.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		810AD1962AA1D35E00F94F43 /* CptShare.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 810AD1952AA1D35D00F94F43 /* CptShare.xcframework */; };
 		8134BEA52A90082300E4A33C /* ZoomVideoSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8180487C2A839AE200AC891F /* ZoomVideoSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		818048692A8397AD00AC891F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 818048682A8397AD00AC891F /* AppDelegate.swift */; };
 		8180486B2A8397AD00AC891F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8180486A2A8397AD00AC891F /* SceneDelegate.swift */; };
@@ -19,6 +16,8 @@
 		818048722A8397AE00AC891F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 818048712A8397AE00AC891F /* Assets.xcassets */; };
 		818048752A8397AE00AC891F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 818048732A8397AE00AC891F /* LaunchScreen.storyboard */; };
 		8180487D2A839AE200AC891F /* ZoomVideoSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8180487C2A839AE200AC891F /* ZoomVideoSDK.xcframework */; };
+		81B8BDE82AB225D1004FC92D /* CptShare.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 816717AB2AB2258800DF336B /* CptShare.xcframework */; };
+		81B8BDE92AB225D1004FC92D /* CptShare.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 816717AB2AB2258800DF336B /* CptShare.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -29,7 +28,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				8134BEA52A90082300E4A33C /* ZoomVideoSDK.xcframework in Embed Frameworks */,
-				810AD1912A9F200F00F94F43 /* CptShare.xcframework in Embed Frameworks */,
+				81B8BDE92AB225D1004FC92D /* CptShare.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -42,9 +41,8 @@
 		810AD1882A9D654400F94F43 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		810AD18B2A9D654F00F94F43 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		810AD18D2A9E72BF00F94F43 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
-		810AD18F2A9F200F00F94F43 /* CptShare.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = CptShare.xcframework; path = "../../Downloads/zoom-video-sdk-iOS-1.8.5/Sample-Libs/lib/CptShare.xcframework"; sourceTree = "<group>"; };
-		810AD1952AA1D35D00F94F43 /* CptShare.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = CptShare.xcframework; sourceTree = "<group>"; };
 		8134BEA92A900A6300E4A33C /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		816717AB2AB2258800DF336B /* CptShare.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = CptShare.xcframework; sourceTree = "<group>"; };
 		818048652A8397AD00AC891F /* MyVideoSDKApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyVideoSDKApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		818048682A8397AD00AC891F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8180486A2A8397AD00AC891F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -61,9 +59,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				810AD1902A9F200F00F94F43 /* CptShare.xcframework in Frameworks */,
-				810AD1962AA1D35E00F94F43 /* CptShare.xcframework in Frameworks */,
 				8180487D2A839AE200AC891F /* ZoomVideoSDK.xcframework in Frameworks */,
+				81B8BDE82AB225D1004FC92D /* CptShare.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,9 +94,9 @@
 				8180486E2A8397AD00AC891F /* Main.storyboard */,
 				818048712A8397AE00AC891F /* Assets.xcassets */,
 				818048732A8397AE00AC891F /* LaunchScreen.storyboard */,
-				8180487C2A839AE200AC891F /* ZoomVideoSDK.xcframework */,
-				810AD1952AA1D35D00F94F43 /* CptShare.xcframework */,
 				818048762A8397AE00AC891F /* Info.plist */,
+				8180487C2A839AE200AC891F /* ZoomVideoSDK.xcframework */,
+				816717AB2AB2258800DF336B /* CptShare.xcframework */,
 			);
 			path = MyVideoSDKApp;
 			sourceTree = "<group>";
@@ -107,7 +104,6 @@
 		8180487E2A839BCD00AC891F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				810AD18F2A9F200F00F94F43 /* CptShare.xcframework */,
 				810AD18D2A9E72BF00F94F43 /* ReplayKit.framework */,
 				810AD18B2A9D654F00F94F43 /* VideoToolbox.framework */,
 				810AD1882A9D654400F94F43 /* CoreVideo.framework */,
@@ -343,6 +339,10 @@
 				DEVELOPMENT_TEAM = UY87FSQVG3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MyVideoSDKApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "My VSDK";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Required for Bluetooth audio devices";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Required for Video";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Required for Audio";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -372,6 +372,10 @@
 				DEVELOPMENT_TEAM = UY87FSQVG3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MyVideoSDKApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "My VSDK";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Required for Bluetooth audio devices";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Required for Video";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Required for Audio";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

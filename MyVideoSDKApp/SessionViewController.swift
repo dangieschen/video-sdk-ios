@@ -22,7 +22,7 @@ class SessionViewController: UIViewController, UITabBarDelegate, ZoomVideoSDKDel
     
     // MARK: Session Information
     // TODO: Ensure that you do not hard code JWT or any other confidential credentials in your production app.
-    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBfa2V5IjoiemQ5bEJHQWFYU3ZwR05vZ3lpMWFaSjZDNERJeXR1cXZrRGJBIiwidmVyc2lvbiI6MSwiaWF0IjoxNjkzMzc4NzUyLCJleHAiOjE2OTM1NTE1NTIsInRwYyI6Ik15U2VzaCIsInJvbGVfdHlwZSI6MX0.JCwMsAWZDgZyrDdFwdlmrKrjigFHQDisNpeOJpS2hg8"
+    let token = ""
     let sessionName = "MySesh"      // NOTE: Must match "tpc" field in JWT
     let userName = "My Username"
     
