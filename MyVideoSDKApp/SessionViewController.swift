@@ -128,7 +128,6 @@ class SessionViewController: UIViewController, UITabBarDelegate, ZoomVideoSDKDel
             if let myVideoIsOn = myUserVideoCanvas.videoStatus()?.on,
                myVideoIsOn == false {
                 DispatchQueue.main.async {
-                    self.loadingLabel.isHidden = true
                     self.tabBar.isHidden = false
                     myUserVideoCanvas.subscribe(with: self.canvasView, aspectMode: .panAndScan, andResolution: ._Auto)
                 }
@@ -140,14 +139,16 @@ class SessionViewController: UIViewController, UITabBarDelegate, ZoomVideoSDKDel
 
     func onUserShareStatusChanged(_ helper: ZoomVideoSDKShareHelper?, user: ZoomVideoSDKUser?, status: ZoomVideoSDKReceiveSharingStatus) {
         // Get User's share canvas.
-        let shareCanvas = ZoomVideoSDK.shareInstance()?.getSession()?.getMySelf()?.getShareCanvas()
-        // Ensure that sharing has been started
+        let shareCanvas = user?.getShareCanvas()
+        // Ensure that sharing has been started.
         if status == ZoomVideoSDKReceiveSharingStatus.start {
             // Set video aspect.
             let videoAspect = ZoomVideoSDKVideoAspect.panAndScan
-            // Render the user's share stream.
-            let error = shareCanvas?.subscribe(with: canvasView, aspectMode: videoAspect, andResolution: ._Auto)
-            print("Share error: \(error!.rawValue)")
+            DispatchQueue.main.async {
+                // Render the user's share stream.
+                let error = shareCanvas?.subscribe(with: self.canvasView, aspectMode: videoAspect, andResolution: ._Auto)
+                print("Share error: \(error!.rawValue)")
+            }
         } else if status == ZoomVideoSDKReceiveSharingStatus.stop {
             shareCanvas?.unSubscribe(with: canvasView)
         }
@@ -222,8 +223,8 @@ class SessionViewController: UIViewController, UITabBarDelegate, ZoomVideoSDKDel
 
             // Get the ZoomVideoSDKShareHelper to perform UIView sharing actions.
             if let shareHelper = ZoomVideoSDK.shareInstance()?.getShareHelper() {
-                // Call startSharewith: to begin sharing.
-                let returnValue = shareHelper.startShare(with: canvasView)
+                // Call startSharewith: to begin sharing the loading label.
+                let returnValue = shareHelper.startShare(with: loadingLabel)
                 if returnValue == .Errors_Success {
                     // Your view is now being shared.
                     print("Sharing succeeded")
@@ -241,6 +242,7 @@ class SessionViewController: UIViewController, UITabBarDelegate, ZoomVideoSDKDel
             // Unsubscribe from sharing if currently active
             let shareCanvas = ZoomVideoSDK.shareInstance()?.getSession()?.getMySelf()?.getShareCanvas()
             if shareCanvas?.shareStatus()?.sharingStatus == ZoomVideoSDKReceiveSharingStatus.start {
+                self.loadingLabel.isHidden = true
                 shareCanvas?.unSubscribe(with: canvasView)
             }
             ZoomVideoSDK.shareInstance()?.leaveSession(true)
