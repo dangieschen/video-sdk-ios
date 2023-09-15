@@ -240,6 +240,7 @@ class SessionViewController: UIViewController, UITabBarDelegate, ZoomVideoSDKDel
             tabBar.isUserInteractionEnabled = false
             self.loadingLabel.isHidden = true
 
+            // Stop screen sharing if currently in progress
             if let shareHelper = ZoomVideoSDK.shareInstance()?.getShareHelper() {
                 // Stop sharing view.
                 let returnValue = shareHelper.stopShare()
