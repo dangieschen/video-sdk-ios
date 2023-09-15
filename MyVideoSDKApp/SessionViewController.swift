@@ -22,7 +22,7 @@ class SessionViewController: UIViewController, UITabBarDelegate, ZoomVideoSDKDel
     
     // MARK: Session Information
     // TODO: Ensure that you do not hard code JWT or any other confidential credentials in your production app.
-    let token = ""
+    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBfa2V5IjoiemQ5bEJHQWFYU3ZwR05vZ3lpMWFaSjZDNERJeXR1cXZrRGJBIiwidmVyc2lvbiI6MSwiaWF0IjoxNjk0NjI0NzkxLCJleHAiOjE2OTQ3OTc1OTEsInRwYyI6Ik15U2VzaCIsInJvbGVfdHlwZSI6MX0.dHsZ-6NhpL9WHV-2sufvX_161DMgaVr8fPMNn9YxgYA"
     let sessionName = "MySesh"      // NOTE: Must match "tpc" field in JWT
     let userName = "My Username"
     
@@ -240,10 +240,14 @@ class SessionViewController: UIViewController, UITabBarDelegate, ZoomVideoSDKDel
             tabBar.isUserInteractionEnabled = false
             self.loadingLabel.isHidden = true
 
-            // Unsubscribe from sharing if currently active
-            let shareCanvas = ZoomVideoSDK.shareInstance()?.getSession()?.getMySelf()?.getShareCanvas()
-            if shareCanvas?.shareStatus()?.sharingStatus == ZoomVideoSDKReceiveSharingStatus.start {
-                shareCanvas?.unSubscribe(with: canvasView)
+            if let shareHelper = ZoomVideoSDK.shareInstance()?.getShareHelper() {
+                // Stop sharing view.
+                let returnValue = shareHelper.stopShare()
+                if returnValue == .Errors_Success {
+                    print("Stop sharing succeeded")
+                } else {
+                    print("Stop sharing failed")
+                }
             }
             ZoomVideoSDK.shareInstance()?.leaveSession(true)
             return
