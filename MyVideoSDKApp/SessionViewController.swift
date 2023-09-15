@@ -22,7 +22,7 @@ class SessionViewController: UIViewController, UITabBarDelegate, ZoomVideoSDKDel
     
     // MARK: Session Information
     // TODO: Ensure that you do not hard code JWT or any other confidential credentials in your production app.
-    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBfa2V5IjoiemQ5bEJHQWFYU3ZwR05vZ3lpMWFaSjZDNERJeXR1cXZrRGJBIiwidmVyc2lvbiI6MSwiaWF0IjoxNjk0NjI0NzkxLCJleHAiOjE2OTQ3OTc1OTEsInRwYyI6Ik15U2VzaCIsInJvbGVfdHlwZSI6MX0.dHsZ-6NhpL9WHV-2sufvX_161DMgaVr8fPMNn9YxgYA"
+    let token = ""
     let sessionName = "MySesh"      // NOTE: Must match "tpc" field in JWT
     let userName = "My Username"
     
@@ -156,10 +156,15 @@ class SessionViewController: UIViewController, UITabBarDelegate, ZoomVideoSDKDel
     
     func onSessionLeave() {
         let myUser = ZoomVideoSDK.shareInstance()?.getSession()?.getMySelf()
-        // Get User's video canvas.
+        // Unsubscribe User's video canvas.
         if let usersVideoCanvas = myUser?.getVideoCanvas() {
             // Unsubscribe user's video canvas to stop rendering their video stream.
-            usersVideoCanvas.unSubscribe(with: view)
+            usersVideoCanvas.unSubscribe(with: canvasView)
+        }
+        // Unsubscribe User's sharing canvas.
+        if let usersSharingCanvas = myUser?.getShareCanvas() {
+            // Unsubscribe user's sharing canvas to stop rendering screen sharing.
+            usersSharingCanvas.unSubscribe(with: canvasView)
         }
         presentingViewController?.dismiss(animated: true)
     }
