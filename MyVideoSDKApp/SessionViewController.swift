@@ -238,11 +238,11 @@ class SessionViewController: UIViewController, UITabBarDelegate, ZoomVideoSDKDel
             return
         case ControlOption.endSession.rawValue:
             tabBar.isUserInteractionEnabled = false
+            self.loadingLabel.isHidden = true
 
             // Unsubscribe from sharing if currently active
             let shareCanvas = ZoomVideoSDK.shareInstance()?.getSession()?.getMySelf()?.getShareCanvas()
             if shareCanvas?.shareStatus()?.sharingStatus == ZoomVideoSDKReceiveSharingStatus.start {
-                self.loadingLabel.isHidden = true
                 shareCanvas?.unSubscribe(with: canvasView)
             }
             ZoomVideoSDK.shareInstance()?.leaveSession(true)
