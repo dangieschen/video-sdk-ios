@@ -20,7 +20,7 @@ class SessionViewController: UIViewController, UITabBarDelegate, ZoomVideoSDKDel
     var toggleAudioBarItem: UITabBarItem!
     
     // NOTE: Make sure these are set correctly and JWT is valid.
-    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBfa2V5IjoiZ19Bc0N0bmhRNkdic21wZlNMOVVfZyIsInJvbGVfdHlwZSI6MSwidHBjIjoiem9vbS1taWMtdGVzdC0yIiwidmVyc2lvbiI6MSwiaWF0IjoxNzMzODQ5MDE5LCJleHAiOjE3MzM4NTI2MTl9.3TLSj3qTRmP-DENjgTJwF0mZRNfm1nloG_KXpSv2fdU"
+    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBfa2V5IjoiZ19Bc0N0bmhRNkdic21wZlNMOVVfZyIsInJvbGVfdHlwZSI6MSwidHBjIjoiem9vbS1taWMtdGVzdC0yIiwidmVyc2lvbiI6MSwiaWF0IjoxNzMzODY4MDQ4LCJleHAiOjE3MzM4NzE2NDh9.HjextZZi_t_o07QjBeJpwCwrrHgFGSzP5hgu-S9Z_cw"
     let sessionName = "zoom-mic-test-2"
     let userName = "Dan G"
     
@@ -188,28 +188,91 @@ class SessionViewController: UIViewController, UITabBarDelegate, ZoomVideoSDKDel
     private func handleToggleVideo(item: UITabBarItem) {
         tabBar.items![ControlOption.toggleVideo.rawValue].isEnabled = false
         
-        guard let usersVideoCanvas = ZoomVideoSDK.shareInstance()?.getSession()?.getMySelf()?.getVideoCanvas(),
-              let videoHelper = ZoomVideoSDK.shareInstance()?.getVideoHelper() else {
-            tabBar.items![ControlOption.toggleVideo.rawValue].isEnabled = true
+        // Create a background queue for video operations
+        let videoQueue = DispatchQueue(label: "com.myapp.videoqueue", qos: .userInitiated)
+        
+        videoQueue.async {
+            guard let videoHelper = ZoomVideoSDK.shareInstance()?.getVideoHelper(),
+                  let usersVideoCanvas = ZoomVideoSDK.shareInstance()?.getSession()?.getMySelf()?.getVideoCanvas() else {
+                DispatchQueue.main.async {
+                    self.tabBar.items![ControlOption.toggleVideo.rawValue].isEnabled = true
+                }
+                return
+            }
+            
+            let myVideoIsOn = usersVideoCanvas.videoStatus()?.on ?? false
+            print("Current video status - isOn: \(myVideoIsOn)")
+            
+            if myVideoIsOn {
+                let error = videoHelper.stopVideo()
+                print("Stop video error: \(error.rawValue)")
+                
+                DispatchQueue.main.async {
+                    self.toggleVideoBarItem.title = "Start Video"
+                    self.toggleVideoBarItem.image = UIImage(systemName: "video")
+                    self.placeholderView.isHidden = false
+                    
+                    // Unsubscribe from current video
+                    usersVideoCanvas.unSubscribe(with: self.canvasView)
+                }
+            } else {
+                let error = videoHelper.startVideo()
+                print("Start video error: \(error.rawValue)")
+                
+                // Add a small delay to allow camera to initialize
+                Thread.sleep(forTimeInterval: 0.5)
+                
+                DispatchQueue.main.async {
+                    self.toggleVideoBarItem.title = "Stop Video"
+                    self.toggleVideoBarItem.image = UIImage(systemName: "video.slash")
+                    
+                    // Subscribe to video canvas
+                    let subscribeError = usersVideoCanvas.subscribe(with: self.canvasView,
+                                                                  aspectMode: .panAndScan,
+                                                                  andResolution: ._Auto)
+                    print("Video subscribe error: \(String(describing: subscribeError.rawValue))")
+                    
+                    if subscribeError == .Errors_Success {
+                        self.placeholderView.isHidden = true
+                        print("Successfully subscribed to video canvas")
+                    } else {
+                        print("Failed to subscribe to video canvas")
+                        self.placeholderView.isHidden = false
+                    }
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self.tabBar.items![ControlOption.toggleVideo.rawValue].isEnabled = true
+            }
+        }
+    }
+    
+    func onUserVideoStatusChanged(_ helper: ZoomVideoSDKVideoHelper?, user: ZoomVideoSDKUser?, status: ZoomVideoSDKVideoStatus?) {
+        print("Video status changed - User: \(String(describing: user?.getName()))")
+        print("Video status - isOn: \(String(describing: status?.on))")
+        
+        guard let myUser = ZoomVideoSDK.shareInstance()?.getSession()?.getMySelf(),
+              user?.getID() == myUser.getID() else {
             return
         }
         
-        let myVideoIsOn = usersVideoCanvas.videoStatus()?.on ?? false
-        if myVideoIsOn {
-            let error = videoHelper.stopVideo()
-            print("Stop video error: \(error.rawValue)")
-            toggleVideoBarItem.title = "Start Video"
-            toggleVideoBarItem.image = UIImage(systemName: "video")
-            placeholderView.isHidden = false
-        } else {
-            let error = videoHelper.startVideo()
-            print("Start video error: \(error.rawValue)")
-            toggleVideoBarItem.title = "Stop Video"
-            toggleVideoBarItem.image = UIImage(systemName: "video.slash")
-            placeholderView.isHidden = true
+        DispatchQueue.main.async {
+            if status?.on == true {
+                if let canvas = user?.getVideoCanvas() {
+                    let error = canvas.subscribe(with: self.canvasView,
+                                              aspectMode: .panAndScan,
+                                              andResolution: ._Auto)
+                    print("Video subscribe error in status change: \(String(describing: error.rawValue))")
+                    self.placeholderView.isHidden = true
+                }
+            } else {
+                if let canvas = user?.getVideoCanvas() {
+                    canvas.unSubscribe(with: self.canvasView)
+                }
+                self.placeholderView.isHidden = false
+            }
         }
-        
-        tabBar.items![ControlOption.toggleVideo.rawValue].isEnabled = true
     }
     
     private func handleToggleAudio(item: UITabBarItem) {
