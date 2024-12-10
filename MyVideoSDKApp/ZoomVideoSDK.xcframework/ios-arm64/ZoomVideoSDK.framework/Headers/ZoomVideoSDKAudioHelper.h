@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ZoomVideoSDK.h"
+#import <ZoomVideoSDK/ZoomVideoSDK.h>
 
 /*!
  @class ZoomVideoSDKAudioHelper
@@ -28,20 +28,45 @@
 - (ZoomVideoSDKError)stopAudio;
 
 /*!
- @brief Mute user audio by userId
+ @brief Mute user's audio.
  @return the result of it
  @warning If mute self use userid=0.
- @warning Only user who start the session can mute others audio..
+ @warning Only host or manager can mute others audio.
  */
 - (ZoomVideoSDKError)muteAudio:(ZoomVideoSDKUser * _Nullable)user;
 
 /*!
- @brief Unmute user audio by userId
+ @brief Ask unmute user's audio.
  @return the result of it
  @warning If unmute self use userid=0.
- @warning Only user who start the session can unmute others audio..
+ @warning Only host or manager can unmute others audio.
+ @warning This functinon will trigger the callback {@link onHostAskUnmute}.
  */
 - (ZoomVideoSDKError)unmuteAudio:(ZoomVideoSDKUser * _Nullable)user;
+
+/*!
+ @brief Mute all user's VOIP audio except my self.
+ @param allowUnmute Yes means allow the user to unmute themself, otherwise NO.
+ @return The result of it.
+ @warning Only host or manager can mute all user's audio.
+ */
+- (ZoomVideoSDKError)muteAllAudio:(BOOL)allowUnmute;
+
+/*!
+ @brief Allow the others to unmute themselves or not.
+ @param allowUnmute Yes means allow the user to unmute themself, otherwise NO.
+ @return The result of it.
+ @warning Only host or manager can chagne this property.
+ */
+- (ZoomVideoSDKError)allowAudioUnmutedBySelf:(BOOL)allowUnmute;
+
+/*!
+ @brief Ask unmute all user's VOIP audio.
+ @return The result of it.
+ @warning Only host or manager can ask unmute all user's audio.
+ @warning This functinon will trigger the callback {@link onHostAskUnmute}.
+ */
+- (ZoomVideoSDKError)unmuteAllAudio;
 
 /*!
  @brief Call the function to subscribe audio rawdata.
@@ -58,15 +83,22 @@
 - (ZoomVideoSDKError)unSubscribe;
 
 /*!
- @brief Reset Audio Session including Category and Mode.
+ @brief Reset Audio Session including Category and Mode for ZoomVideoSDK Audio Session Environment When developer change audio session in session
  @return Yes means set auidio success, otherwise failed.
  */
-- (BOOL)resetAudioSession;
+- (BOOL)resetAudioSession DEPRECATED_MSG_ATTRIBUTE("Use setSDKAuidoSessionEnv instead");
 
 /*!
- @brief Clean Audio Session including Category and Mode. 
+ @brief  Set the AVAudio Session Environment for Zoom Video SDK Session
+ @warning Developer change AVAudio Session by self special needs in SDK session，will cause the audio output abnormal. Then developer can set SDK AVAudio Session environment
+ @return Yes means set audio success, otherwise failed.
  */
-- (void)cleanAudioSession;
+- (BOOL)setSDKAudioSessionEnv;
 
+/*!
+ @brief Clean Audio Session including Category and Mode.
+ @warning SDK will restore audio session status after session end. if developer call overrideOutputAudioPort interface wtth AVAudioSessionPortBuiltInSpeaker in AVAudioSessionCategoryPlayAndRecord Category before join session, then sdk can not restore audio session BuiltInSpeaker output when session end,
+ */
+- (void)cleanAudioSession DEPRECATED_MSG_ATTRIBUTE("No longer maintain anymore!");
 @end
 

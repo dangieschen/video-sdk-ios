@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ZoomVideoSDKAnnotationHelper.h"
+#import <ZoomVideoSDK/ZoomVideoSDKAnnotationHelper.h>
 
 @protocol ZoomVideoSDKShareSource;
 @protocol ZoomVideoSDKShareAudioSource;
@@ -40,25 +40,47 @@
 
 /*!
  @brief Share an external source.
- @param delegate External share source,To get extended information, see {@link ZoomVideoSDKShareSource}.
- @return If the function succeeds, it will return Errors_Success.Otherwise failed. To get extended error information, see [ZoomVideoSDKError].
- */
-- (ZoomVideoSDKError)startSharingExternalSource:(id<ZoomVideoSDKShareSource> _Nullable)delegate DEPRECATED_MSG_ATTRIBUTE("Use -startSharingExternalSource:andAudioSource: instead");
-
-/*!
- @brief Share an external source.
  @param shareDelegate External share source,To get extended information, see {@link ZoomVideoSDKShareSource}.
  @param audioDelegate External share audio source,To get extended information, see {@link ZoomVideoSDKShareAudioSource}.
  @return If the function succeeds, it will return Errors_Success.Otherwise failed. To get extended error information, see [ZoomVideoSDKError].
  @warning   If audioDelegate is non-null, it means share user-defined audio at the same time.
  */
-- (ZoomVideoSDKError)startSharingExternalSource:(id<ZoomVideoSDKShareSource> _Nullable)shareDelegate andAudioSource:(id <ZoomVideoSDKShareAudioSource> _Nullable)audioDelegate;
+- (ZoomVideoSDKError)startSharingExternalSource:(id<ZoomVideoSDKShareSource> _Nullable)shareDelegate andAudioSource:(id <ZoomVideoSDKShareAudioSource> _Nullable)audioDelegate DEPRECATED_MSG_ATTRIBUTE("use startSharingExternalSource:andAudioSource:isPlaying: instead");;
+
+/*!
+ @brief Share an external source.
+ @param shareDelegate External share source,To get extended information, see {@link ZoomVideoSDKShareSource}.
+ @param audioDelegate External share audio source,To get extended information, see {@link ZoomVideoSDKShareAudioSource}.
+ @param isPlaying YES to play shared audio raw data, false not to play.
+ @return If the function succeeds, it will return Errors_Success.Otherwise failed. To get extended error information, see [ZoomVideoSDKError].
+ @warning   If audioDelegate is non-null, it means share user-defined audio at the same time.
+ */
+- (ZoomVideoSDKError)startSharingExternalSource:(id<ZoomVideoSDKShareSource> _Nullable)shareDelegate andAudioSource:(id <ZoomVideoSDKShareAudioSource> _Nullable)audioDelegate isPlaying:(BOOL)isPlaying;
+
+/**
+ @brief Enable or disable local playback of shared audio raw data.
+ @param bPlay YES to play shared audio raw data, NO not to play it.
+ @return If the function succeeds, it will return Errors_Success. Otherwise failed. To get extended error information, see {@link ZoomVideoSDKError}.
+ */
+- (ZoomVideoSDKError)enablePlaySharingAudioRawdata:(BOOL)bPlay;
 
 /*!
  @brief Stop view or screen share.
  @return If the function succeeds, the return value is Errors_Success. Otherwise failed. To get extended error information, see [ZoomVideoSDKError].
  */
 - (ZoomVideoSDKError)stopShare;
+
+/**
+ @brief Pause share.
+ @return If the function succeeds, the return value is Errors_Success. Otherwise failed. To get extended error information, see {@link ZoomVideoSDKError}.
+ */
+- (ZoomVideoSDKError)pauseShare;
+
+/**
+ @brief Resume share.
+ @return If the function succeeds, the return value is Errors_Success. Otherwise failed. To get extended error information, see {@link ZoomVideoSDKError}.
+ */
+- (ZoomVideoSDKError)resumeShare;
 
 /*!
  @brief Lock sharing the view or screen. Only the host can call this method.
@@ -140,4 +162,18 @@
  @return The result of it.
  */
 - (ZoomVideoSDKError)destroyAnnotationHelper:(ZoomVideoSDKAnnotationHelper * _Nullable)helper;
+
+/*!
+ @brief Enable or disable participants can share simultaneously.
+ @param enable True to enable. False to disable.
+ @return If the function succeeds, the return value is Errors_Success.
+ @warning When you switch multi share from enable to disable, all sharing will be stopped
+ */
+- (ZoomVideoSDKError)enableMultiShare:(BOOL)enable;
+
+/*!
+ @brief Determine whether multi share is enabled or not..
+ @return true enabled, false not enabled.
+ */
+- (BOOL)isMultiShareEnabled;
 @end

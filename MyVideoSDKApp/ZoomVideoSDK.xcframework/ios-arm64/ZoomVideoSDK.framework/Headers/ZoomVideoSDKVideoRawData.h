@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ZoomVideoSDKConstants.h"
+#import <ZoomVideoSDK/ZoomVideoSDKConstants.h>
 
 /*!
  @class ZoomVideoSDKVideoRawData
@@ -29,6 +29,16 @@
  @brief The YUVI420 V buffer. The Y component represents the chroma values.
  */
 @property (nonatomic, assign) char *vBuffer;
+
+/*!
+ @brief The YUVI420 data buffer. The alpha component represents the chroma values.
+ */
+@property (nonatomic, assign) char *alphaBuffer;
+
+/*!
+ @brief the alpha buffer data length
+ */
+@property (nonatomic, assign) NSUInteger alphaBufferLen;
 
 /*!
  @brief The stream size.

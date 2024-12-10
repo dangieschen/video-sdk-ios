@@ -2,7 +2,6 @@
 //  StartViewController.swift
 //  MyVideoSDKApp
 //
-//
 
 import UIKit
 import ZoomVideoSDK
@@ -10,22 +9,6 @@ import ZoomVideoSDK
 class StartViewController: UIViewController {
     
     var enterSessionButton: UIButton!
-    
-    // MARK: VSDK setup
-    private func setupSDK() {
-        let initParams = ZoomVideoSDKInitParams()
-        initParams.domain = "zoom.us"
-        let sdkInitReturnStatus = ZoomVideoSDK.shareInstance()?.initialize(initParams)
-        switch sdkInitReturnStatus {
-        case .Errors_Success:
-            print("SDK initialized successfully")
-        default:
-            if let error = sdkInitReturnStatus {
-                print("SDK failed to initialize: \(error)")
-                return
-            }
-        }
-    }
 
     override func loadView() {
         super.loadView()
@@ -41,23 +24,25 @@ class StartViewController: UIViewController {
     }
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+
         view.backgroundColor = .gray
         
         enterSessionButton.backgroundColor = .white
         enterSessionButton.layer.cornerRadius = 8
-        enterSessionButton.contentEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
         enterSessionButton.setTitle("Enter Session", for: .normal)
         enterSessionButton.addTarget(self, action: #selector(enterButtonTapped(_:)), for: .touchUpInside)
 
-        setupSDK()
+        // **Do not call setupSDK() here.** Initialization should be done once (e.g., AppDelegate)
+        // remove the call to setupSDK()
     }
     
     @IBAction func enterButtonTapped(_ sender: UIButton) {
         enterSessionButton.isEnabled = false
         let sessionViewController = SessionViewController()
         sessionViewController.modalPresentationStyle = .fullScreen
-        present(sessionViewController, animated: false)
-        enterSessionButton.isEnabled = true
+        present(sessionViewController, animated: false) {
+            self.enterSessionButton.isEnabled = true
+        }
     }
 }
-

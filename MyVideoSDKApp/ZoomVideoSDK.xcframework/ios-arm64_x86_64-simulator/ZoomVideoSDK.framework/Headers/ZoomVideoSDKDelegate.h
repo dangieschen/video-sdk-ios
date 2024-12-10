@@ -4,23 +4,24 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ZoomVideoSDKConstants.h"
-#import "ZoomVideoSDKVideoRawData.h"
-#import "ZoomVideoSDKAudioRawData.h"
-#import "ZoomVideoSDKChatHelper.h"
-#import "ZoomVideoSDKPreProcessRawData.h"
-#import "ZoomVideoSDKVideoSender.h"
-#import "ZoomVideoSDKShareSender.h"
-#import "ZoomVideoSDKShareAudioSender.h"
-#import "ZoomVideoSDKAudioSender.h"
-#import "ZoomVideoSDKVideoCapability.h"
-#import "ZoomVideoSDKVideoHelper.h"
-#import "ZoomVideoSDKAudioHelper.h"
-#import "ZoomVideoSDKShareHelper.h"
-#import "ZoomVideoSDKRecordingHelper.h"
-#import "ZoomVideoSDKLiveStreamHelper.h"
-#import "ZoomVideoSDKUserHelper.h"
-#import "ZoomVideoSDKLiveTranscriptionHelper.h"
+#import <ZoomVideoSDK/ZoomVideoSDKConstants.h>
+#import <ZoomVideoSDK/ZoomVideoSDKVideoRawData.h>
+#import <ZoomVideoSDK/ZoomVideoSDKAudioRawData.h>
+#import <ZoomVideoSDK/ZoomVideoSDKChatHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKPreProcessRawData.h>
+#import <ZoomVideoSDK/ZoomVideoSDKVideoSender.h>
+#import <ZoomVideoSDK/ZoomVideoSDKShareSender.h>
+#import <ZoomVideoSDK/ZoomVideoSDKShareAudioSender.h>
+#import <ZoomVideoSDK/ZoomVideoSDKAudioSender.h>
+#import <ZoomVideoSDK/ZoomVideoSDKVideoCapability.h>
+#import <ZoomVideoSDK/ZoomVideoSDKVideoHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKAudioHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKShareHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKRecordingHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKLiveStreamHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKUserHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKLiveTranscriptionHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKFileTranserHandle.h>
 
 @class ZoomVideoSDKRawDataPipe;
 @class ZoomVideoSDKVideoCanvas;
@@ -41,7 +42,13 @@
 /*!
  @brief Callback: Invoked when the current user leaves the session.
  */
-- (void)onSessionLeave;
+- (void)onSessionLeave DEPRECATED_MSG_ATTRIBUTE("use onSessionLeave: instead");
+
+/*!
+ @brief Invoked when the current user leaves the session with reason.
+ @param reason Leave session reason. See [ZoomVideoSDKSessionLeaveReason] for more information.
+ */
+- (void)onSessionLeave:(ZoomVideoSDKSessionLeaveReason)reason;
 
 /*!
  @brief Callback: Invoked when errors occur.
@@ -142,11 +149,13 @@
 
 /*!
  @brief Callback: Invoked when the session requires a password to join.
+ @param completion the block for this callback.
  */
 - (void)onSessionNeedPassword:(ZoomVideoSDKError (^ _Nullable)(NSString * _Nullable password, BOOL leaveSessionIgnorePassword))completion;
 
 /*!
  @brief Callback: Invoked when the provided session password is wrong or invalid.
+ @param completion the block for this callback.
  */
 - (void)onSessionPasswordWrong:(ZoomVideoSDKError (^ _Nullable)(NSString * _Nullable password, BOOL leaveSessionIgnorePassword))completion;
 
@@ -159,6 +168,7 @@
 /*!
  @brief Callback: Invoked when individual user's audio raw data received
  @param rawData Raw audio data. see [ZoomVideoSDKAudioRawData].
+ @param user  See [ZoomVideoSDKUser].
  */
 - (void)onOneWayAudioRawDataReceived:(ZoomVideoSDKAudioRawData * _Nullable)rawData user:(ZoomVideoSDKUser * _Nullable)user;
 
@@ -175,6 +185,13 @@
  */
 - (void)onInviteByPhoneStatus:(ZoomVideoSDKPhoneStatus)status failReason:(ZoomVideoSDKPhoneFailedReason)failReason;
 
+/*!
+ @brief Callback: Invoked when the invite by phone user joined session success.
+ @param user success joined user,  See [ZoomVideoSDKUser].
+ @param phoneNumber phone number of callout.
+ */
+- (void)onCalloutJoinSuccess:(ZoomVideoSDKUser * _Nullable)user phoneNumber:(NSString * _Nullable)phoneNumber;
+
 /**
  @brief Callback: Invoked when the command channel is ready to be used.
  When the SDK attempts to establish a connection for the command channel when joining a session, this callback is triggered once the connection attempt for the command channel is completed.
@@ -188,6 +205,14 @@
  @param sendUser The user who sent the command.
  */
 - (void)onCommandReceived:(NSString * _Nullable)commandContent sendUser:(ZoomVideoSDKUser * _Nullable)sendUser;
+
+/**
+ @brief Callback for when the current user is granted camera control access.
+ @note Once the current user sends the camera control request, this callback will be triggered with the result of the request.
+ @param user The pointer to the user who received the request.
+ @param isApproved The result of the camera control request.
+ */
+- (void)onCameraControlRequestResult:(ZoomVideoSDKUser* _Nullable)user approved:(BOOL)isApproved;
 
 /**
  @brief Callback: Invoked when cloud recording status has started, paused, stopped, resumed, or otherwise changed.
@@ -221,6 +246,19 @@
  @param videoCanvas the video canvas for the multi-camera. See [ZoomVideoSDKVideoCanvas].
  */
 - (void)onMultiCameraStreamStatusChanged:(ZoomVideoSDKMultiCameraStreamStatus)status parentUser:(ZoomVideoSDKUser *_Nullable)user videoCanvas:(ZoomVideoSDKVideoCanvas *_Nullable)videoCanvas;
+
+/**
+ @brief Callback: Notify the mic status when testing.
+ @param status The mic status. For more details, See [ZoomVideoSDKTestMicStatus].
+ */
+- (void)onTestMicStatusChanged:(ZoomVideoSDKTestMicStatus)status;
+
+/**
+ @brief Callback: Notify the current mic or speaker volume when testing.
+ @param micVolume Specify the volume of the mic.
+ @param speakerVolume Specify the volume of the speaker.
+ */
+- (void)onMicSpeakerVolumeChanged:(int)micVolume speakerVolume:(int)speakerVolume;
 
 /**
  @brief Callback: Invoked when the SDK requires system permissions to continue functioning.
@@ -307,6 +345,33 @@
  @param view The view that failed to subscribe.
  */
 - (void)onShareCanvasSubscribeFail:(ZoomVideoSDKSubscribeFailReason)failReason user:(ZoomVideoSDKUser *_Nullable)user view:(UIView *_Nullable)view;
+
+/**
+ @brief Invoked when send file status make change.
+ @param file The class to sendfile object.
+ @param status The stauts of file transfer.
+ */
+- (void)onSendFileStatus:(ZoomVideoSDKSendFile * _Nullable)file status:(ZoomVideoSDKFileTransferStatus)status;
+
+/**
+ @brief Invoked when send file status make change.
+ @param file The class to receive file object.
+ @param status The stauts of file transfer.
+ */
+- (void)onReceiveFileStatus:(ZoomVideoSDKReceiveFile * _Nullable)file status:(ZoomVideoSDKFileTransferStatus)status;
+
+/**
+ @brief Callback event of video alpha channel mode changes.
+ @param isAlphaChannelOn True means that alpha channel mode is on, otherwise off.
+ */
+- (void)onVideoAlphaChannelStatusChanged:(BOOL)isAlphaChannelOn;
+
+/**
+ * @brief Callback event of spotlighted video user changes.
+ * @param videoHelper The pointer of video helper object.
+ * @param userList List of users who has been spotlighted.
+ */
+- (void)onSpotlightVideoChanged:(ZoomVideoSDKVideoHelper * _Nullable)videoHelper userList:(NSArray <ZoomVideoSDKUser *>* _Nullable)userList;
 
 @end
 

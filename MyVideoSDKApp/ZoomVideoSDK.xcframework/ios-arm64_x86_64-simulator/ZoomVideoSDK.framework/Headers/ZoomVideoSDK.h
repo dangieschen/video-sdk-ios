@@ -5,27 +5,28 @@
 
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
-#import "ZoomVideoSDKSession.h"
-#import "ZoomVideoSDKUser.h"
-#import "ZoomVideoSDKDelegate.h"
-#import "ZoomVideoSDKConstants.h"
-#import "ZoomVideoSDKAudioHelper.h"
-#import "ZoomVideoSDKVideoHelper.h"
-#import "ZoomVideoSDKUserHelper.h"
-#import "ZoomVideoSDKVideoCanvas.h"
-#import "ZoomVideoSDKRawDataPipe.h"
-#import "ZoomVideoSDKShareHelper.h"
-#import "ZoomVideoSDKLiveStreamHelper.h"
-#import "ZoomVideoSDKChatHelper.h"
-#import "ZoomVideoSDKPhoneHelper.h"
-#import "ZoomVideoSDKCmdChannel.h"
-#import "ZoomVideoSDKRecordingHelper.h"
-#import "ZoomVideoSDKAudioSettingHelper.h"
-#import "ZoomVideoSDKTestAudioDeviceHelper.h"
-#import "ZoomVideoSDKLiveTranscriptionHelper.h"
-#import "ZoomVideoSDKNetworkConnectionHelper.h"
-#import "ZoomVideoSDKVirtualBackgroundHelper.h"
-#import "ZoomVideoSDKCRCHelper.h"
+#import <ZoomVideoSDK/ZoomVideoSDKSession.h>
+#import <ZoomVideoSDK/ZoomVideoSDKUser.h>
+#import <ZoomVideoSDK/ZoomVideoSDKDelegate.h>
+#import <ZoomVideoSDK/ZoomVideoSDKConstants.h>
+#import <ZoomVideoSDK/ZoomVideoSDKAudioHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKVideoHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKUserHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKVideoCanvas.h>
+#import <ZoomVideoSDK/ZoomVideoSDKRawDataPipe.h>
+#import <ZoomVideoSDK/ZoomVideoSDKShareHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKLiveStreamHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKChatHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKPhoneHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKCmdChannel.h>
+#import <ZoomVideoSDK/ZoomVideoSDKRecordingHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKAudioSettingHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKTestAudioDeviceHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKLiveTranscriptionHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKNetworkConnectionHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKVirtualBackgroundHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKCRCHelper.h>
+#import <ZoomVideoSDK/ZoomVideoSDKRemoteCameraControlHelper.h>
 
 /*!
  @class ZoomVideoSDKExtendParams
@@ -90,6 +91,10 @@
  @brief Local video on or off
  */
 @property (assign, nonatomic) BOOL localVideoOn;
+/*!
+ @brief set the multitaskingCameraAccessEnabled for AVCaptureSession of local camera. For more informaton, refer to https://developer.apple.com/documentation/avfoundation/avcapturesession/4013228-multitaskingcameraaccesssupporte
+ */
+@property (assign, nonatomic) BOOL multitaskingCameraAccessEnabled;
 
 @end
 
@@ -151,6 +156,10 @@
  When there is only one user remaining in a session, that session is considered idle.
  */
 @property (nonatomic, assign) NSInteger sessionIdleTimeoutMins;
+/*!
+ @brief [Optional] Whether to cancel the bandwidth limit, If YES is set, the network bandwidth is no longer limited, and better audio and video quality can be obtained.Bandwidth is not limited by default. If it is a wifi network, the bandwidth is not limited, and this setting is invalid.
+ */
+@property (nonatomic, assign) BOOL enable5GHighBandWidth;
 /*!
  @brief [Optional]  Audio Option.
  */
@@ -247,88 +256,99 @@
  */
 - (NSString * _Nullable)getSDKVersion;
 
+/**
+ @brief Exporting a log file to local disk.
+ @return If the function succeeds, the return value is the exported log file path.
+ */
+- (NSString * _Nullable)exportLog;
+
+/**
+ @brief Clean all exported logs.
+ @return If the function succeeds, it will return Errors_Success. Otherwise failed.
+ */
+- (ZoomVideoSDKError)cleanAllExportedLogs;
 /*!
  @brief Returns an instance to manage audio controls related to the current video SDK session.
  @return The object of ZoomVideoSDKAudioHelper. See [ZoomVideoSDKAudioHelper]
  */
-- (ZoomVideoSDKAudioHelper * _Nonnull)getAudioHelper;
+- (ZoomVideoSDKAudioHelper * _Nullable)getAudioHelper;
 
 /*!
  @brief Returns an instance to manage cameras and video during a video SDK session.
  @return The object of ZoomVideoSDKVideoHelper.  See [ZoomVideoSDKVideoHelper].
  */
-- (ZoomVideoSDKVideoHelper * _Nonnull)getVideoHelper;
+- (ZoomVideoSDKVideoHelper * _Nullable)getVideoHelper;
 
 /*!
  @brief Returns an instance to manage users present in a video SDK session.
  @return The object of ZoomVideoSDKUserHelper. See [ZoomVideoSDKUserHelper].
  */
-- (ZoomVideoSDKUserHelper * _Nonnull)getUserHelper;
+- (ZoomVideoSDKUserHelper * _Nullable)getUserHelper;
 
 /*!
  @brief Returns an instance to manage screen sharing during a video SDK session.
  @return The object of ZoomVideoSDKShareHelper. See [ZoomVideoSDKShareHelper].
  */
-- (ZoomVideoSDKShareHelper * _Nonnull)getShareHelper;
+- (ZoomVideoSDKShareHelper * _Nullable)getShareHelper;
 
 /*!
  @brief Returns an instance to manage live streaming during a video SDK session.
  @return The object of ZoomVideoSDKLiveStreamHelper. See [ZoomVideoSDKLiveStreamHelper].
  */
-- (ZoomVideoSDKLiveStreamHelper * _Nonnull)getLiveStreamHelper;
+- (ZoomVideoSDKLiveStreamHelper * _Nullable)getLiveStreamHelper;
 
 /*!
  @brief Returns an instance to send and receive chat messages within video SDK session participants.
  @return The object of ZoomVideoSDKChatHelper. See [ZoomVideoSDKChatHelper].
  */
-- (ZoomVideoSDKChatHelper * _Nonnull)getChatHelper;
+- (ZoomVideoSDKChatHelper * _Nullable)getChatHelper;
 
 /*!
  @brief Returns an instance to manage phone invitations during a video SDK session.
  @return The object of ZoomVideoSDKPhoneHelper. See [ZoomVideoSDKPhoneHelper].
  */
-- (ZoomVideoSDKPhoneHelper * _Nonnull)getPhoneHelper;
+- (ZoomVideoSDKPhoneHelper * _Nullable)getPhoneHelper;
 
 /*!
  @brief Returns an instance to use command channel features during a video SDK session.
  @return A [ZoomVideoSDKCmdChannel] instance.
  */
-- (ZoomVideoSDKCmdChannel * _Nonnull)getCmdChannel;
+- (ZoomVideoSDKCmdChannel * _Nullable)getCmdChannel;
 
 /*!
  @brief Returns an instance to manage cloud recordings during a video SDK session.
  @return A [ZoomVideoSDKRecordingHelper] instance.
  */
-- (ZoomVideoSDKRecordingHelper * _Nonnull)getRecordingHelper;
+- (ZoomVideoSDKRecordingHelper * _Nullable)getRecordingHelper;
 
 /*!
  @brief Get audio setting helper.
  @return A [ZoomVideoSDKAudioSettingHelper] instance.
  */
-- (ZoomVideoSDKAudioSettingHelper * _Nonnull)getAudioSettingHelper;
+- (ZoomVideoSDKAudioSettingHelper * _Nullable)getAudioSettingHelper;
 
 /*!
  @brief Get test audio device helper
  @return A [ZoomVideoSDKTestAudioDeviceHelper] instance.
  */
-- (ZoomVideoSDKTestAudioDeviceHelper * _Nonnull)getTestAudioDeviceHelper;
+- (ZoomVideoSDKTestAudioDeviceHelper * _Nullable)getTestAudioDeviceHelper;
 
 /*!
  @brief Get live transcription helper object.
  @return A [ZoomVideoSDKLiveTranscriptionHelper] instance.
  */
-- (ZoomVideoSDKLiveTranscriptionHelper * _Nonnull)getLiveTranscriptionHelper;
+- (ZoomVideoSDKLiveTranscriptionHelper * _Nullable)getLiveTranscriptionHelper;
 
 /*!
  @brief Get virtual background helper object.
  @return A [ZoomVideoSDKLiveTranscriptionHelper] instance.
  */
-- (ZoomVideoSDKVirtualBackgroundHelper * _Nonnull)getVirtualBackgroundHelper;
+- (ZoomVideoSDKVirtualBackgroundHelper * _Nullable)getVirtualBackgroundHelper;
 
 /**
  @brief Get crc helper object.
  @return If the function succeeds, the return value is the crc helper object. Otherwise returns nil.
  */
-- (ZoomVideoSDKCRCHelper * _Nonnull)getCRCHelper;
+- (ZoomVideoSDKCRCHelper * _Nullable)getCRCHelper;
 
 @end

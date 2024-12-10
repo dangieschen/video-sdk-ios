@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ZoomVideoSDKRawDataPipe.h"
-#import "ZoomVideoSDKVideoCanvas.h"
-
+#import <ZoomVideoSDK/ZoomVideoSDKRawDataPipe.h>
+#import <ZoomVideoSDK/ZoomVideoSDKVideoCanvas.h>
+#import <ZoomVideoSDK/ZoomVideoSDKRemoteCameraControlHelper.h>
 /*!
  @class ZoomVideoSDKVideoStatisticInfo
  @brief Video statistic information.
@@ -89,7 +89,7 @@
 /*!
  @brief Get the user's id.
  */
-- (NSUInteger)getUserID;
+- (NSInteger)getUserID;
 /*!
  @brief Get the name of the user in the session.
  */
@@ -98,6 +98,10 @@
  @brief Get the user's custom identity.. Which pass in jwt token or in SDKSessionContext.customUserId
  */
 - (NSString *_Nullable)getCustomUserId;
+/*!
+ @brief Get the user's reference.
+ */
+- (NSString *_Nullable)getUserReference;
 /*!
  @brief Determine whether the user is the host.
  */
@@ -110,6 +114,10 @@
  @brief are user agreed with the individual record.
  */
 - (BOOL)isIndividualRecordAgreed;
+/**
+ @brief check if user be spotlighted.
+ */
+- (BOOL)isVideoSpotLighted;
 /*!
  @brief Get the user's audio status.
  */
@@ -144,6 +152,13 @@
  @return a list of all video canvas. For more information, see [ZoomVideoSDKVideoCanvas].
  */
 - (NSArray <ZoomVideoSDKVideoCanvas *> *_Nullable)getMultiCameraCanvasList;
+
+/*!
+ @brief Get the helper class instance to access the remote camera control.
+ @return If the function succeeds, the return value is the remote camera control helper object. Otherwise returns null. For more details, see {@link ZoomVideoSDKRemoteCameraControlHelper}.
+ */
+- (ZoomVideoSDKRemoteCameraControlHelper *_Nullable)getRemoteCameraControlHelper;
+
 /*!
  @brief The user's share canvas.
  */
@@ -171,5 +186,13 @@
  @return if success return YES, otherwise NO.
  */
 - (BOOL)canSetUserVolume:(BOOL)isSharingAudio;
+
+/*!
+ @brief Send file to current user
+ @param filePath The local path of the file.
+ @return If the function succeeds, the return value is Errors_Success.
+ @warning this interface will related with chat  privilege see @{ZoomVideoSDKChatPrivilegeType}.
+ */
+- (ZoomVideoSDKError)transferFile:(NSString * _Nullable)filePath;
 
 @end
