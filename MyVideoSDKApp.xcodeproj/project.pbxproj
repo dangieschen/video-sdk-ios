@@ -18,6 +18,7 @@
 		9B5B007E2D08A81F0074DC0D /* CptShare.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 816717AB2AB2258800DF336B /* CptShare.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9B5B007F2D08A81F0074DC0D /* ZoomVideoSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8180487C2A839AE200AC891F /* ZoomVideoSDK.xcframework */; };
 		9B5B00802D08A81F0074DC0D /* ZoomVideoSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8180487C2A839AE200AC891F /* ZoomVideoSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9BD76E732D090570004D8094 /* AudioSourceProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BD76E722D090570004D8094 /* AudioSourceProcessor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -52,6 +53,7 @@
 		818048742A8397AE00AC891F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		818048762A8397AE00AC891F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8180487C2A839AE200AC891F /* ZoomVideoSDK.xcframework */ = {isa = PBXFileReference; expectedSignature = "AppleDeveloperProgram:BJ4HAAB9B3:Zoom Video Communications, Inc."; lastKnownFileType = wrapper.xcframework; path = ZoomVideoSDK.xcframework; sourceTree = "<group>"; };
+		9BD76E722D090570004D8094 /* AudioSourceProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSourceProcessor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 				818048762A8397AE00AC891F /* Info.plist */,
 				8180487C2A839AE200AC891F /* ZoomVideoSDK.xcframework */,
 				816717AB2AB2258800DF336B /* CptShare.xcframework */,
+				9BD76E722D090570004D8094 /* AudioSourceProcessor.swift */,
 			);
 			path = MyVideoSDKApp;
 			sourceTree = "<group>";
@@ -186,6 +189,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8180486D2A8397AD00AC891F /* StartViewController.swift in Sources */,
+				9BD76E732D090570004D8094 /* AudioSourceProcessor.swift in Sources */,
 				810AD1802A9805EA00F94F43 /* SessionViewController.swift in Sources */,
 				818048692A8397AD00AC891F /* AppDelegate.swift in Sources */,
 				8180486B2A8397AD00AC891F /* SceneDelegate.swift in Sources */,
