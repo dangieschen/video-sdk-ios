@@ -19,9 +19,10 @@ class SessionViewController: UIViewController, UITabBarDelegate, ZoomVideoSDKDel
     var tabBar: UITabBar!
     var toggleVideoBarItem: UITabBarItem!
     var toggleAudioBarItem: UITabBarItem!
+    
+    // The audio processor for virtual mic
     private let audioProcessor = AudioSourceProcessor()
     
-    // NOTE: Make sure these are set correctly and JWT is valid.
     let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBfa2V5IjoiZ19Bc0N0bmhRNkdic21wZlNMOVVfZyIsInJvbGVfdHlwZSI6MSwidHBjIjoiem9vbS1taWMtdGVzdC0yIiwidmVyc2lvbiI6MSwiaWF0IjoxNzMzODc3MTY5LCJleHAiOjE3MzM4ODA3Njl9.EkUlF7UfbE2-vFXMwcZQpxYC5YKTfc0I0fjBygcPeiU"
     let sessionName = "zoom-mic-test-2"
     let userName = "Dan G"
@@ -100,21 +101,61 @@ class SessionViewController: UIViewController, UITabBarDelegate, ZoomVideoSDKDel
             placeholderLabel.bottomAnchor.constraint(equalTo: placeholderView.bottomAnchor)
         ])
         
-        joinSession()
+        configureAudioDevicesAndJoinSession()
     }
     
-    private func joinSession() {
+    private func configureAudioDevicesAndJoinSession() {
+        var useVirtualMic = false
+        
+        let audioSession = AVAudioSession.sharedInstance()
+        do {
+            // Set category and activate session
+            try audioSession.setCategory(.playAndRecord,
+                                         mode: .default,
+                                         options: [.allowBluetooth, .mixWithOthers])
+            try audioSession.setActive(true)
+        } catch {
+            print("Failed to configure audio session: \(error)")
+        }
+
+
+        if let inputs = audioSession.availableInputs {
+            print("Available input devices:")
+            for input in inputs {
+                print(" - \(input.portName) (\(input.portType))")
+                // Check if the mic name contains "medaica"
+                if input.portName.lowercased().contains("medaica") {
+                    print("Found 'medaica' mic: \(input.portName). Will use virtual mic processing.")
+                    useVirtualMic = true
+                }
+            }
+        } else {
+            print("No available input devices found. Using built-in mic without virtual processing.")
+        }
+
+        joinSession(useVirtualMic: useVirtualMic)
+    }
+    
+    private func joinSession(useVirtualMic: Bool) {
         let sessionContext = ZoomVideoSDKSessionContext()
         sessionContext.token = token
         sessionContext.sessionName = sessionName
         sessionContext.userName = userName
-        sessionContext.virtualAudioMicDelegate = audioProcessor
+        
+        // If we found a "medaica" device, use virtual mic
+        if useVirtualMic {
+            print("Using virtual mic delegate.")
+            sessionContext.virtualAudioMicDelegate = audioProcessor
+        } else {
+            print("Not using virtual mic delegate, defaulting to built-in mic.")
+        }
         
         if (ZoomVideoSDK.shareInstance()?.joinSession(sessionContext)) != nil {
-            // Session joined attempt made (not guaranteed that we are fully in session)
-            print("Session joined")
+            print("Session join attempted")
         } else {
-            let errorAlert = UIAlertController(title: "Error", message: "Join session failed. Check your token or sessionName.", preferredStyle: .alert)
+            let errorAlert = UIAlertController(title: "Error",
+                                               message: "Join session failed. Check your token or sessionName.",
+                                               preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default)
             errorAlert.addAction(okAction)
             present(errorAlert, animated: true)
@@ -317,7 +358,6 @@ class SessionViewController: UIViewController, UITabBarDelegate, ZoomVideoSDKDel
         tabBar.items![ControlOption.shareScreen.rawValue].isEnabled = false
 
         if let shareHelper = ZoomVideoSDK.shareInstance()?.getShareHelper() {
-            // Example: sharing the loadingLabel as a view.
             let returnValue = shareHelper.startShare(with: loadingLabel)
             if returnValue == .Errors_Success {
                 print("Sharing started successfully")
